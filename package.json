@@ -1,0 +1,22 @@
+{
+  "name": "typescript-intro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "mdx-deck src/deck.mdx",
+    "build": "mdx-deck build src/deck.mdx",
+    "help": "mdx-deck"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node-fetch": "^2.5.4",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@mdx-deck/themes": "^4.0.0",
+    "mdx-deck": "^4.0.0"
+  }
+}

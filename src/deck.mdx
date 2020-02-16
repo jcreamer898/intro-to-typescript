@@ -1,0 +1,311 @@
+import { future, highlight } from '@mdx-deck/themes'
+
+export const theme = {
+  ...future,
+  ...highlight
+}
+
+# Why types? Isn’t JavaScript enough?
+
+* Yeah, sure, it is, but…
+* Typescript is proven to reduce bugs
+* Typescript can make developing faster
+* VSCode has built in TS support, even for JS
+* Built in API docs
+* Basically any JS is valid TS
+
+---
+
+### Basic Types
+
+```ts
+const name = "Jonathan Creamer";
+const age = 31;
+const birthday = new Date(1988, 5, 18);
+const hobbies = ['Xbox', 'Code'];
+const me = {
+  name,
+  age,
+  birthday,
+  hobbies
+};
+```
+
+* Types above are "inferred"
+* No need to declare them
+* Less mistakes on property names, methods, etc
+
+---
+
+### Interfaces
+
+```ts
+interface Email {
+  email: string;
+  verified: boolean;
+}
+
+interface User {
+  id: number;
+  name: string;
+  first_name: string;
+  last_name: string;
+  is_public: boolean;
+  image_id: number;
+  emails: Email[]
+}
+```
+
+---
+
+### Interfaces
+
+```ts
+interface Member {
+  id: number;
+  name: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+}
+
+const user: Member = {
+  id: 1;
+  name: 'Marco';
+};
+
+const member: Member = user;
+```
+
+* Types are structural
+
+---
+
+### Interfaces
+
+```ts
+const user: User = {
+  id: 54321
+  name: 'Jonathan Creamer',
+  first_name: 'Jonathan',
+  last_name: 'Creamer',
+  is_public: true,
+  image_id: 1234,
+  emails: [{
+    email: 'jonathancreamer@eventbrite.com',
+    verified: true,
+  }]
+};
+```
+
+---
+### Interfaces
+
+* Model an API
+* Define an abstraction
+* Implement with extends, or cast with `as` or `:`
+* Creates built in docs
+
+---
+
+### Interfaces
+
+```ts
+import nodeFetch from 'node-fetch';
+
+const fetch<T> = async (string: url) => {
+  // ...
+  return items as T;
+};
+
+// ...
+
+const user = await fetch<User>("/api/users/me");
+user; // will be type User
+```
+
+* Use `<>` aka "generics" to "pass types"
+* Note parameters
+
+---
+
+### Interfaces
+
+```ts
+interface FetchOptions {
+  //...
+};
+
+const getEventsForUser = async (user: User, options?: FetchOptions) => {
+
+};
+```
+
+* Use types for function params
+* Use `?` for optional
+
+---
+
+### Interfaces
+
+```ts
+interface Paginator<T> {
+  items: T[];
+  index: number;
+  next(): T[];
+  previous(): T[];
+}
+
+class UserPagination implements Paginator<User> {
+  index = 0;
+  items: User[] = [];
+
+  constructor(items: User[]) {
+    this.items = items;
+  }
+
+  next() { /* ... */ }
+  previous() { /* ... */ }
+}
+```
+* Can be implemented
+
+---
+
+### Interfaces
+
+```ts
+interface TicketPriceCalculator {
+  (price: number, discount: number): number;
+}
+
+const calculateSomeDiscount: TicketPriceCalculator = (price: number, dicount: number) => {
+    const calculated = doStuff();
+    return calculated;
+}
+```
+
+* Define function signature
+
+---
+### Unions and Intersections
+
+```ts
+interface TicketClass {
+  // ...
+  delivery_methods: DeliveryMethods;
+}
+
+type DeliveryMethods = 'electronic' | 'will_call' | 'standard_shipping';
+```
+
+* Use `type` for simple naming of things like unions
+* "literal type"
+
+---
+### Unions and Intersections
+
+```ts
+interface Organization {
+  id: number;
+  name: string;
+  image_id: number;
+  vertical: 'default' | 'music';
+}
+
+class MyOrganization implements Organization {};
+class MyUser implements User {};
+
+const getEvents = (model: Organization | User) => {
+  if (model instanceof "User") {}
+};
+```
+
+* Type guard
+
+---
+### Tuples
+
+```
+const idMap: [number, number][] = [
+  [1234, 4568],
+  [9876, 4321],
+  [2468, 13579],
+];
+
+for (const [orgId, userId] of idMap) {
+    // ...
+}
+```
+
+* Proper type is `[type1, type2, ...][]`
+
+---
+
+### Enums
+
+```ts
+export enum SupportedLangs {
+  English = 'en_us',
+  Spanish = 'es_ES',
+  French = 'fr_FR',
+}
+
+SupportedLangs.English;
+```
+
+---
+
+### @types
+
+```bash
+npm i -D @types/react
+```
+
+* http://definitelytyped.org/tsd/
+
+---
+
+### React
+
+```ts
+import React from "React";
+
+export interface UserDisplayProps {
+  user: User;
+}
+
+export const UserDisplay: React.SFC<UserDisplayProps> = (props) => {
+  // ...
+}
+```
+
+* `<>` here is used for the `props`
+
+---
+
+### React
+
+```ts
+interface PageHotReloadProps {
+  activePageKey: PageType;
+}
+
+interface PageHotReloadState {
+  config: string;
+}
+
+export class PageHotReload extends React.Component<PageHotReloadProps, PageHotReloadState> {
+  readonly state: PageHotReloadState = {
+    config: '',
+  };
+
+  render() {
+    const activePageKey = this.props.activePageKey;
+    const config = this.state.config;
+    const customCss = this.state.customCss;
+  }
+}
+```
